@@ -1,0 +1,50 @@
+name: Biome Lint and Check
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    lint:
+        name: Run Biome Lint on Pull Request
+        runs-on: ubuntu-latest
+        if: github.event_name == 'pull_request' # プルリクエストに対して実行
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v3
+              with:
+                node-version: '20'
+
+            - name: Install dependencies
+              run: npm install
+
+            - name: Run Biome Lint
+              run: npm run lint
+
+    check:
+        name: Run Biome Check on Push to Main
+        runs-on: ubuntu-latest
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push' # mainブランチにpushされた場合に実行
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v3
+              with:
+                node-version: '20'
+
+            - name: Install dependencies
+              run: npm install
+
+            - name: Run Biome Check
+              run: npm run check
