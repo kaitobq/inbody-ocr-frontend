@@ -1,21 +1,29 @@
 "use client"
 
-// import { useToast } from '@components/ui/use-toast'
-import type { SignupRequest } from "types/auth"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { Button, Input, Label } from "components/ui"
+import { useAuth } from "hooks/useAuth"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { useAuth } from "hooks/useAuth"
 import { Controller, useForm } from "react-hook-form"
+// import { useToast } from '@components/ui/use-toast'
+import type { SignupRequest } from "types/auth"
 import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
 
 const schema = z.object({
   userName: z.string().min(1, { message: "ユーザー名を入力してください。" }),
-  email: z.string().email({ message: "正しいmメールアドレスを入力してください。" }),
-  password: z.string().min(8, { message: "パスワードは8文字以上で入力してください。" }),
-  confirmPassword: z.string().min(8, { message: "パスワードは8文字以上で入力してください。" }),
-  organizationName: z.string().min(3, { message: "組織名を3文字以上で入力してください。" }),
+  email: z
+    .string()
+    .email({ message: "正しいmメールアドレスを入力してください。" }),
+  password: z
+    .string()
+    .min(8, { message: "パスワードは8文字以上で入力してください。" }),
+  confirmPassword: z
+    .string()
+    .min(8, { message: "パスワードは8文字以上で入力してください。" }),
+  organizationName: z
+    .string()
+    .min(3, { message: "組織名を3文字以上で入力してください。" }),
 })
 
 type schemaType = z.infer<typeof schema>
@@ -24,7 +32,11 @@ export const CreateOrganizationForm = () => {
   const [loading, setLoading] = useState(false)
   const auth = useAuth()
   const router = useRouter()
-  const { control, handleSubmit, formState: {errors} } = useForm<schemaType>({resolver: zodResolver(schema)})
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<schemaType>({ resolver: zodResolver(schema) })
 
   const onSubmit = async (data: schemaType) => {
     setLoading(true)
@@ -70,7 +82,7 @@ export const CreateOrganizationForm = () => {
               placeholder="Enter your name"
               onChange={onChange}
               value={value}
-              />
+            />
           )}
           name="userName"
         />
@@ -144,8 +156,6 @@ export const CreateOrganizationForm = () => {
     </form>
   )
 }
-
-
 
 // signup success
 // {

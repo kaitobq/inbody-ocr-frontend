@@ -1,18 +1,24 @@
 "use client"
 
-import { z } from "zod"
-import React, { useState } from 'react'
-import { useAuth } from "hooks/useAuth"
-import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button, Input, Label } from "components/ui"
+import { useAuth } from "hooks/useAuth"
 import { useParams } from "next/navigation"
+import React, { useState } from "react"
+import { Controller, useForm } from "react-hook-form"
+import { z } from "zod"
 
 const schema = z.object({
   name: z.string().min(1, { message: "ユーザー名を入力してください。" }),
-  email: z.string().email({ message: "正しいmメールアドレスを入力してください。" }),
-  password: z.string().min(8, { message: "パスワードは8文字以上で入力してください。" }),
-  confirmPassword: z.string().min(8, { message: "パスワードは8文字以上で入力してください。" }),
+  email: z
+    .string()
+    .email({ message: "正しいmメールアドレスを入力してください。" }),
+  password: z
+    .string()
+    .min(8, { message: "パスワードは8文字以上で入力してください。" }),
+  confirmPassword: z
+    .string()
+    .min(8, { message: "パスワードは8文字以上で入力してください。" }),
 })
 
 type schemaType = z.infer<typeof schema>
@@ -21,8 +27,12 @@ export const SignupForm = () => {
   const { id } = useParams()
   const orgId = id as string
   const [loading, setLoading] = useState(false)
-  const auth = useAuth()  
-  const { control, handleSubmit, formState: {errors} } = useForm<schemaType>({resolver: zodResolver(schema)})
+  const auth = useAuth()
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<schemaType>({ resolver: zodResolver(schema) })
 
   const onSubmit = async (data: schemaType) => {
     setLoading(true)
@@ -68,7 +78,7 @@ export const SignupForm = () => {
               placeholder="Enter your name"
               onChange={onChange}
               value={value}
-              />
+            />
           )}
           name="name"
         />
