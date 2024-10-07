@@ -1,7 +1,10 @@
-import React from 'react'
+import { SignupForm } from "components/auth/SignupForm"
+import React from "react"
 
 export default function SignupPage() {
   return (
-    <div>SignupPage</div>
+    <div>
+      <SignupForm />
+    </div>
   )
 }
