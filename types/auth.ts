@@ -49,3 +49,27 @@ export type CreateOrganizationResponse = {
         expiresAt: string
     }
 }
+
+export type SigninRequest = {
+    email: string
+    password: string
+}
+
+export type SigninResponse = {
+    message: string
+    organization: {
+        id: string
+        name: string
+        createdAt: string
+        updatedAt: string
+    }
+    user: {
+        id: string
+        name: string
+        role: string
+    }
+    token: {
+        value: string
+        expiresAt: string
+    }
+}

@@ -1,9 +1,10 @@
-import type { CreateOrganizationRequest, CreateOrganizationResponse, SignupRequest, SignupResponse } from 'types/auth'
+import type { CreateOrganizationRequest, CreateOrganizationResponse, SigninRequest, SigninResponse, SignupRequest, SignupResponse } from 'types/auth'
 import { fetcher } from './fetcher'
 
 type Response = {
     createOrgRes: CreateOrganizationResponse
     signupRes: SignupResponse
+    signinRes: SigninResponse
 }
 
 // type Convert = {
@@ -38,8 +39,20 @@ export const useAuth = () => {
         })
     }
 
+    const signin = async (req: SigninRequest) => {
+        return await apiFetcher.fetchJSON<Response["signinRes"]>({
+            path: "/v1/organization/signin",
+            method: "POST",
+            body: {
+                "email": req.email,
+                "password": req.password
+            }
+        })
+    }
+
     return {
         createOrganization,
-        signup
+        signup,
+        signin
     }
 }
