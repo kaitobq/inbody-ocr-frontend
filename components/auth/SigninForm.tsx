@@ -10,10 +10,16 @@ import { z } from "zod"
 
 const schema = z.object({
   email: z
-    .string({ required_error: "メールアドレスを入力してください。", invalid_type_error: "入力値に誤りがあります。" })
+    .string({
+      required_error: "メールアドレスを入力してください。",
+      invalid_type_error: "入力値に誤りがあります。",
+    })
     .email({ message: "正しいメールアドレスを入力してください。" }),
   password: z
-    .string({ required_error: "パスワードを入力してください。", invalid_type_error: "入力値に誤りがあります。" })
+    .string({
+      required_error: "パスワードを入力してください。",
+      invalid_type_error: "入力値に誤りがあります。",
+    })
     .min(8, { message: "パスワードは8文字以上で入力してください。" }),
 })
 
@@ -29,9 +35,9 @@ export const SigninForm = () => {
   } = useForm<schemaType>({
     resolver: zodResolver(schema),
     defaultValues: {
-        email: "",
-        password: "",
-    }
+      email: "",
+      password: "",
+    },
   })
   const showErrorToast = useToast("error")
   const showSuccessToast = useToast("success")
@@ -68,7 +74,7 @@ export const SigninForm = () => {
           name="email"
         />
         {errors.email && (
-            <p className="text-red-500 text-xs">{errors.email.message}</p>
+          <p className="text-red-500 text-xs">{errors.email.message}</p>
         )}
       </div>
       <div className="space-y-2">
@@ -87,7 +93,7 @@ export const SigninForm = () => {
           name="password"
         />
         {errors.password && (
-            <p className="text-red-500 text-xs">{errors.password.message}</p>
+          <p className="text-red-500 text-xs">{errors.password.message}</p>
         )}
       </div>
       <Button type="submit" className="w-full" disabled={loading}>

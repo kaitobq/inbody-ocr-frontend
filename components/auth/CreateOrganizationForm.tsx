@@ -11,19 +11,34 @@ import { z } from "zod"
 
 const schema = z.object({
   userName: z
-    .string({ required_error: "ユーザー名を入力してください。", invalid_type_error: "入力値に誤りがあります。" })
+    .string({
+      required_error: "ユーザー名を入力してください。",
+      invalid_type_error: "入力値に誤りがあります。",
+    })
     .min(1, { message: "ユーザー名を入力してください。" }),
   email: z
-    .string({ required_error: "メールアドレスを入力してください。", invalid_type_error: "入力値に誤りがあります。" })
+    .string({
+      required_error: "メールアドレスを入力してください。",
+      invalid_type_error: "入力値に誤りがあります。",
+    })
     .email({ message: "正しいmメールアドレスを入力してください。" }),
   password: z
-    .string({ required_error: "パスワードを入力してください。", invalid_type_error: "入力値に誤りがあります。" })
+    .string({
+      required_error: "パスワードを入力してください。",
+      invalid_type_error: "入力値に誤りがあります。",
+    })
     .min(8, { message: "パスワードは8文字以上で入力してください。" }),
   confirmPassword: z
-    .string({ required_error: "パスワードを入力してください。", invalid_type_error: "入力値に誤りがあります。" })
+    .string({
+      required_error: "パスワードを入力してください。",
+      invalid_type_error: "入力値に誤りがあります。",
+    })
     .min(8, { message: "パスワードは8文字以上で入力してください。" }),
   organizationName: z
-    .string({ required_error: "組織名を入力してください。", invalid_type_error: "入力値に誤りがあります。" })
+    .string({
+      required_error: "組織名を入力してください。",
+      invalid_type_error: "入力値に誤りがあります。",
+    })
     .min(3, { message: "組織名を3文字以上で入力してください。" }),
 })
 
@@ -149,7 +164,9 @@ export const CreateOrganizationForm = () => {
           name="confirmPassword"
         />
         {errors.confirmPassword && (
-          <p className="text-red-500 text-xs">{errors.confirmPassword.message}</p>
+          <p className="text-red-500 text-xs">
+            {errors.confirmPassword.message}
+          </p>
         )}
       </div>
       <div className="space-y-2">
@@ -167,7 +184,9 @@ export const CreateOrganizationForm = () => {
           name="organizationName"
         />
         {errors.organizationName && (
-          <p className="text-red-500 text-xs">{errors.organizationName.message}</p>
+          <p className="text-red-500 text-xs">
+            {errors.organizationName.message}
+          </p>
         )}
       </div>
       <Button type="submit" className="w-full" disabled={loading}>
