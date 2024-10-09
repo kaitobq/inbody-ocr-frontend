@@ -1,7 +1,7 @@
-import { Header } from "@components/common"
+import { Header } from "components/common"
 import React from "react"
 
-const HomePage = () => {
+export default function HomePage() {
   return (
     <div>
       <Header />
@@ -9,5 +9,3 @@ const HomePage = () => {
     </div>
   )
 }
-
-export default HomePage
