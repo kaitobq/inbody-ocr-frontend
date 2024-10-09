@@ -3,26 +3,27 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button, Input, Label } from "components/ui"
 import { useAuth } from "hooks/useAuth"
+import { useToast } from "hooks/useToast"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
-// import { useToast } from '@components/ui/use-toast'
-import type { SignupRequest } from "types/auth"
 import { z } from "zod"
 
 const schema = z.object({
-  userName: z.string().min(1, { message: "ユーザー名を入力してください。" }),
+  userName: z
+    .string({ required_error: "ユーザー名を入力してください。", invalid_type_error: "入力値に誤りがあります。" })
+    .min(1, { message: "ユーザー名を入力してください。" }),
   email: z
-    .string()
+    .string({ required_error: "メールアドレスを入力してください。", invalid_type_error: "入力値に誤りがあります。" })
     .email({ message: "正しいmメールアドレスを入力してください。" }),
   password: z
-    .string()
+    .string({ required_error: "パスワードを入力してください。", invalid_type_error: "入力値に誤りがあります。" })
     .min(8, { message: "パスワードは8文字以上で入力してください。" }),
   confirmPassword: z
-    .string()
+    .string({ required_error: "パスワードを入力してください。", invalid_type_error: "入力値に誤りがあります。" })
     .min(8, { message: "パスワードは8文字以上で入力してください。" }),
   organizationName: z
-    .string()
+    .string({ required_error: "組織名を入力してください。", invalid_type_error: "入力値に誤りがあります。" })
     .min(3, { message: "組織名を3文字以上で入力してください。" }),
 })
 
@@ -36,17 +37,28 @@ export const CreateOrganizationForm = () => {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<schemaType>({ resolver: zodResolver(schema) })
+    setError,
+  } = useForm<schemaType>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      userName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      organizationName: "",
+    },
+  })
+  const showErrorToast = useToast("error")
+  const showSuccessToast = useToast("success")
 
   const onSubmit = async (data: schemaType) => {
     setLoading(true)
 
     if (data.password !== data.confirmPassword) {
-      //   toast({
-      //     title: 'Error',
-      //     description: 'Passwords do not match.',
-      //     variant: 'destructive',
-      //   })
+      setError("confirmPassword", {
+        type: "manual",
+        message: "パスワードが一致しません。",
+      })
       setLoading(false)
       return
     }
@@ -54,17 +66,10 @@ export const CreateOrganizationForm = () => {
     try {
       const res = await auth.createOrganization(data)
       console.log(res)
-      //   toast({
-      //     title: 'Success',
-      //     description: 'Your account has been created successfully.',
-      //   })
-      // router.push("/signin")
+      showSuccessToast("success")
     } catch (error) {
-      //   toast({
-      //     title: 'Error',
-      //     description: 'Failed to create account. Please try again.',
-      //     variant: 'destructive',
-      //   })
+      console.error(error)
+      showErrorToast("error")
     } finally {
       setLoading(false)
     }
@@ -73,106 +78,101 @@ export const CreateOrganizationForm = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 m-3">
       <div className="space-y-2">
-        <Label htmlFor="name">Name</Label>
+        <Label htmlFor="name">ユーザー名</Label>
         <Controller
           control={control}
           render={({ field: { onChange, value } }) => (
             <Input
               id="userName"
-              placeholder="Enter your name"
+              placeholder="someone"
               onChange={onChange}
               value={value}
             />
           )}
           name="userName"
         />
+        {errors.userName && (
+          <p className="text-red-500 text-xs">{errors.userName.message}</p>
+        )}
       </div>
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">メールアドレス</Label>
         <Controller
           control={control}
           render={({ field: { onChange, value } }) => (
             <Input
               id="email"
               type="email"
-              placeholder="Enter your email"
+              placeholder="someone@example.com"
               onChange={onChange}
               value={value}
             />
           )}
           name="email"
         />
+        {errors.email && (
+          <p className="text-red-500 text-xs">{errors.email.message}</p>
+        )}
       </div>
       <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password">パスワード</Label>
         <Controller
           control={control}
           render={({ field: { onChange, value } }) => (
             <Input
               id="password"
               type="password"
-              placeholder="Create a password"
+              placeholder="password"
               onChange={onChange}
               value={value}
             />
           )}
           name="password"
         />
+        {errors.password && (
+          <p className="text-red-500 text-xs">{errors.password.message}</p>
+        )}
       </div>
       <div className="space-y-2">
-        <Label htmlFor="confirm-password">Confirm Password</Label>
+        <Label htmlFor="confirm-password">パスワード(確認)</Label>
         <Controller
           control={control}
           render={({ field: { onChange, value } }) => (
             <Input
               id="confirm-password"
               type="password"
-              placeholder="Confirm your password"
+              placeholder="password"
               onChange={onChange}
               value={value}
             />
           )}
           name="confirmPassword"
         />
+        {errors.confirmPassword && (
+          <p className="text-red-500 text-xs">{errors.confirmPassword.message}</p>
+        )}
       </div>
       <div className="space-y-2">
-        <Label htmlFor="organization-name">Organization Name</Label>
+        <Label htmlFor="organization-name">組織名</Label>
         <Controller
           control={control}
           render={({ field: { onChange, value } }) => (
             <Input
               id="organization-name"
-              placeholder="Enter your organization name"
+              placeholder="organization"
               onChange={onChange}
               value={value}
             />
           )}
           name="organizationName"
         />
+        {errors.organizationName && (
+          <p className="text-red-500 text-xs">{errors.organizationName.message}</p>
+        )}
       </div>
       <Button type="submit" className="w-full" disabled={loading}>
-        {loading ? "Creating Account..." : "Sign Up"}
+        {loading ? "ロード中..." : "サインアップ"}
       </Button>
     </form>
   )
 }
-
-// signup success
-// {
-//   "message": "Organization created successfully",
-//   "organization": {
-//       "id": "01J9AKA9W73A3H9T3MMANVY4VR",
-//       "name": "My Organization",
-//       "created_at": "2024-10-04T10:46:40.718566633+09:00",
-//       "updated_at": "2024-10-04T10:46:40.718566633+09:00"
-//   },
-//   "user": {
-//       "id": "01J9AKAAPEV6XASZFFMDCMJCT7",
-//       "name": "test",
-//       "role": "owner"
-//   },
-//   "token": {
-//       "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MjgwOTI4MDAsIm9yZ19pZCI6IjAxSjlBS0E5VzczQTNIOVQzTU1BTlZZNFZSIiwidXNlcl9pZCI6IjAxSjlBS0FBUEVWNlhBU1pGRk1EQ01KQ1Q3In0.v4UVI3xGazK4kQVYmEjtnCU1abhxbbH4XSQ3ZdJwR98",
-//       "expires_at": "2024-10-05T10:46:40+09:00"
-//   }
-// }

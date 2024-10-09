@@ -3,21 +3,24 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button, Input, Label } from "components/ui"
 import { useAuth } from "hooks/useAuth"
+import { useToast } from "hooks/useToast"
 import { useParams } from "next/navigation"
 import React, { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
 
 const schema = z.object({
-  name: z.string().min(1, { message: "ユーザー名を入力してください。" }),
+  name: z
+    .string({ required_error: "ユーザー名を入力してください。", invalid_type_error: "入力値に誤りがあります。" })
+    .min(1, { message: "ユーザー名を入力してください。" }),
   email: z
-    .string()
+    .string({ required_error: "メールアドレスを入力してください。", invalid_type_error: "入力値に誤りがあります。" })
     .email({ message: "正しいmメールアドレスを入力してください。" }),
   password: z
-    .string()
+    .string({ required_error: "パスワードを入力してください。", invalid_type_error: "入力値に誤りがあります。" })
     .min(8, { message: "パスワードは8文字以上で入力してください。" }),
   confirmPassword: z
-    .string()
+    .string({ required_error: "パスワードを入力してください。", invalid_type_error: "入力値に誤りがあります。" })
     .min(8, { message: "パスワードは8文字以上で入力してください。" }),
 })
 
@@ -32,17 +35,27 @@ export const SignupForm = () => {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<schemaType>({ resolver: zodResolver(schema) })
+    setError,
+  } = useForm<schemaType>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  })
+  const showErrorToast = useToast("error")
+  const showSuccessToast = useToast("success")
 
   const onSubmit = async (data: schemaType) => {
     setLoading(true)
 
     if (data.password !== data.confirmPassword) {
-      //   toast({
-      //     title: 'Error',
-      //     description: 'Passwords do not match.',
-      //     variant: 'destructive',
-      //   })
+      setError("confirmPassword", {
+        type: "manual",
+        message: "パスワードが一致しません。",
+      })
       setLoading(false)
       return
     }
@@ -50,17 +63,10 @@ export const SignupForm = () => {
     try {
       const res = await auth.signup(orgId, data)
       console.log(res)
-      //   toast({
-      //     title: 'Success',
-      //     description: 'Your account has been created successfully.',
-      //   })
-      // router.push("/signin")
+      showSuccessToast("success")
     } catch (error) {
-      //   toast({
-      //     title: 'Error',
-      //     description: 'Failed to create account. Please try again.',
-      //     variant: 'destructive',
-      //   })
+      console.error(error)
+      showErrorToast("error")
     } finally {
       setLoading(false)
     }
@@ -69,61 +75,70 @@ export const SignupForm = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 m-3">
       <div className="space-y-2">
-        <Label htmlFor="name">Name</Label>
+        <Label htmlFor="name">ユーザー名</Label>
         <Controller
           control={control}
           render={({ field: { onChange, value } }) => (
             <Input
               id="name"
-              placeholder="Enter your name"
+              placeholder="someone"
               onChange={onChange}
               value={value}
             />
           )}
           name="name"
         />
+        {errors.name && (
+          <p className="text-red-500 text-xs">{errors.name.message}</p>
+        )}
       </div>
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">メールアドレス</Label>
         <Controller
           control={control}
           render={({ field: { onChange, value } }) => (
             <Input
               id="email"
               type="email"
-              placeholder="Enter your email"
+              placeholder="someone@example.com"
               onChange={onChange}
               value={value}
             />
           )}
           name="email"
         />
+        {errors.email && (
+          <p className="text-red-500 text-xs">{errors.email.message}</p>
+        )}
       </div>
       <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password">パスワード</Label>
         <Controller
           control={control}
           render={({ field: { onChange, value } }) => (
             <Input
               id="password"
               type="password"
-              placeholder="Create a password"
+              placeholder="password"
               onChange={onChange}
               value={value}
             />
           )}
           name="password"
         />
+        {errors.password && (
+          <p className="text-red-500 text-xs">{errors.password.message}</p>
+        )}
       </div>
       <div className="space-y-2">
-        <Label htmlFor="confirm-password">Confirm Password</Label>
+        <Label htmlFor="confirm-password">パスワード(確認)</Label>
         <Controller
           control={control}
           render={({ field: { onChange, value } }) => (
             <Input
               id="confirm-password"
               type="password"
-              placeholder="Confirm your password"
+              placeholder="password"
               onChange={onChange}
               value={value}
             />
@@ -131,8 +146,11 @@ export const SignupForm = () => {
           name="confirmPassword"
         />
       </div>
+      {errors.confirmPassword && (
+        <p className="text-red-500 text-xs">{errors.confirmPassword.message}</p>
+      )}
       <Button type="submit" className="w-full" disabled={loading}>
-        {loading ? "Creating Account..." : "Sign Up"}
+        {loading ? "ロード中..." : "サインアップ"}
       </Button>
     </form>
   )
