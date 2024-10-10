@@ -1,87 +1,17 @@
 "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod"
 import { Button, Input, Label } from "components/ui"
 import { useAuth } from "mods/hooks/useAuth"
-import { useToast } from "mods/hooks/useToast"
 import { useParams } from "next/navigation"
-import React, { useState } from "react"
-import { Controller, useForm } from "react-hook-form"
-import { z } from "zod"
-
-const schema = z.object({
-  name: z
-    .string({
-      required_error: "ユーザー名を入力してください。",
-      invalid_type_error: "入力値に誤りがあります。",
-    })
-    .min(1, { message: "ユーザー名を入力してください。" }),
-  email: z
-    .string({
-      required_error: "メールアドレスを入力してください。",
-      invalid_type_error: "入力値に誤りがあります。",
-    })
-    .email({ message: "正しいmメールアドレスを入力してください。" }),
-  password: z
-    .string({
-      required_error: "パスワードを入力してください。",
-      invalid_type_error: "入力値に誤りがあります。",
-    })
-    .min(8, { message: "パスワードは8文字以上で入力してください。" }),
-  confirmPassword: z
-    .string({
-      required_error: "パスワードを入力してください。",
-      invalid_type_error: "入力値に誤りがあります。",
-    })
-    .min(8, { message: "パスワードは8文字以上で入力してください。" }),
-})
-
-type schemaType = z.infer<typeof schema>
+import React from "react"
+import { Controller } from "react-hook-form"
 
 export const SignupForm = () => {
   const { id } = useParams()
   const orgId = id as string
-  const [loading, setLoading] = useState(false)
   const auth = useAuth()
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    setError,
-  } = useForm<schemaType>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
-  })
-  const showToast = useToast()
-
-  const onSubmit = async (data: schemaType) => {
-    setLoading(true)
-
-    if (data.password !== data.confirmPassword) {
-      setError("confirmPassword", {
-        type: "manual",
-        message: "パスワードが一致しません。",
-      })
-      setLoading(false)
-      return
-    }
-
-    try {
-      const res = await auth.signup(orgId, data)
-      console.log(res)
-      showToast.success("success")
-    } catch (error) {
-      console.error(error)
-      showToast.error("error")
-    } finally {
-      setLoading(false)
-    }
-  }
+  const { loading, control, handleSubmit, errors, onSubmit } =
+    auth.signup(orgId)
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 m-3">
