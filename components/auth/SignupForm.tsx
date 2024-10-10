@@ -2,8 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button, Input, Label } from "components/ui"
-import { useAuth } from "hooks/useAuth"
-import { useToast } from "hooks/useToast"
+import { useAuth } from "mods/hooks/useAuth"
+import { useToast } from "mods/hooks/useToast"
 import { useParams } from "next/navigation"
 import React, { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
@@ -57,8 +57,7 @@ export const SignupForm = () => {
       confirmPassword: "",
     },
   })
-  const showErrorToast = useToast("error")
-  const showSuccessToast = useToast("success")
+  const showToast = useToast()
 
   const onSubmit = async (data: schemaType) => {
     setLoading(true)
@@ -75,10 +74,10 @@ export const SignupForm = () => {
     try {
       const res = await auth.signup(orgId, data)
       console.log(res)
-      showSuccessToast("success")
+      showToast.success("success")
     } catch (error) {
       console.error(error)
-      showErrorToast("error")
+      showToast.error("error")
     } finally {
       setLoading(false)
     }

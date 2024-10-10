@@ -2,8 +2,9 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button, Input, Label } from "components/ui"
-import { useAuth } from "hooks/useAuth"
-import { useToast } from "hooks/useToast"
+import { useAuth } from "mods/hooks/useAuth"
+import { useCookie } from "mods/hooks/useCookie"
+import { useToast } from "mods/hooks/useToast"
 import React, { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
@@ -39,19 +40,20 @@ export const SigninForm = () => {
       password: "",
     },
   })
-  const showErrorToast = useToast("error")
-  const showSuccessToast = useToast("success")
+  const showToast = useToast()
+  const cookie = useCookie()
 
   const onSubmit = async (data: schemaType) => {
     setLoading(true)
 
     try {
       const res = await auth.signin(data)
+      cookie.setCookie("token", res.token.value)
       console.log(res)
-      showSuccessToast("success")
+      showToast.success("success")
     } catch (error) {
       console.error(error)
-      showErrorToast("error")
+      showToast.error("error")
     } finally {
       setLoading(false)
     }

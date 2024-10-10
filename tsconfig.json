@@ -22,7 +22,7 @@
       // "@/*": ["./*"],
       "components/*": ["components/*"],
       "types/*": ["types/*"],
-      "hooks/*": ["hooks/*"],
+      "mods/*": ["mods/*"],
       "lib/*": ["lib/*"],
     }
   },
