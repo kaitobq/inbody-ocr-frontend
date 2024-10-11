@@ -7,8 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "biome lint --write ./app ./components",
-    "format": "biome format --write ./app ./components",
-    "check": "biome check --write ./app ./components"
+    "format": "biome format --write ./app ./components ./types ./mods ./middleware.ts",
+    "check": "biome check --write ./app ./components ./types ./mods ./middleware.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
