@@ -1,7 +1,7 @@
 import { z } from "zod"
 
 export const SignupSchema = z.object({
-    name: z
+  name: z
     .string({
       required_error: "ユーザー名を入力してください。",
       invalid_type_error: "入力値に誤りがあります。",
@@ -30,34 +30,29 @@ export const SignupSchema = z.object({
 export type SignupSchemaType = z.infer<typeof SignupSchema>
 
 export type SignupRequest = {
-    name: string
-    email: string
-    password: string
-    // organizationName: string
+  name: string
+  email: string
+  password: string
+  // organizationName: string
 }
 
 export type SignupResponse = {
-    status: number
-    message: string
-    organization: {
-        id: string
-        name: string
-        createdAt: string
-        updatedAt: string
-    }
-    user: {
-        id: string
-        name: string
-        role: string
-    }
-    token: {
-        value: string
-        expiresAt: string
-    }
+  status: number
+  message: string
+  organization_id: string
+  user: {
+    id: string
+    name: string
+    role: string
+  }
+  token: {
+    value: string
+    expires_at: string
+  }
 }
 
 export const CreateOrganizationSchema = z.object({
-    userName: z
+  userName: z
     .string({
       required_error: "ユーザー名を入力してください。",
       invalid_type_error: "入力値に誤りがあります。",
@@ -89,33 +84,30 @@ export const CreateOrganizationSchema = z.object({
     .min(3, { message: "組織名を3文字以上で入力してください。" }),
 })
 
-export type CreateOrganizationSchemaType = z.infer<typeof CreateOrganizationSchema>
+export type CreateOrganizationSchemaType = z.infer<
+  typeof CreateOrganizationSchema
+>
 
 export type CreateOrganizationRequest = {
-    userName: string
-    email: string
-    password: string
-    organizationName: string
+  userName: string
+  email: string
+  password: string
+  organizationName: string
 }
 
 export type CreateOrganizationResponse = {
-    status: number
-    message: string
-    organization: {
-        id: string
-        name: string
-        createdAt: string
-        updatedAt: string
-    }
-    user: {
-        id: string
-        name: string
-        role: string
-    }
-    token: {
-        value: string
-        expiresAt: string
-    }
+  status: number
+  message: string
+  organization_id: string
+  user: {
+    id: string
+    name: string
+    role: string
+  }
+  token: {
+    value: string
+    expires_at: string
+  }
 }
 
 export const SigninSchema = z.object({
@@ -136,26 +128,21 @@ export const SigninSchema = z.object({
 export type SigninSchemaType = z.infer<typeof SigninSchema>
 
 export type SigninRequest = {
-    email: string
-    password: string
+  email: string
+  password: string
 }
 
 export type SigninResponse = {
-    status: number
-    message: string
-    organization: {
-        id: string
-        name: string
-        createdAt: string
-        updatedAt: string
-    }
-    user: {
-        id: string
-        name: string
-        role: string
-    }
-    token: {
-        value: string
-        expiresAt: string
-    }
+  status: number
+  message: string
+  organization_id: string
+  user: {
+    id: string
+    name: string
+    role: string
+  }
+  token: {
+    value: string
+    expires_at: string
+  }
 }
