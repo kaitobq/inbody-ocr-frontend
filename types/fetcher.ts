@@ -1,9 +1,9 @@
 export type Req = {
-    path: string
-    method: "GET" | "POST" | "DELETE" | "PUT" | "PATCH" | "OPTIONS"
-    header?: Record<string, string>
-    body: Body
-    accessToken?: string
+  path: string
+  method: "GET" | "POST" | "DELETE" | "PUT" | "PATCH" | "OPTIONS"
+  header?: Record<string, string>
+  body?: Body
+  accessToken?: string
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
