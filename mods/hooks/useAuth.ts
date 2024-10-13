@@ -120,7 +120,6 @@ export const useAuth = () => {
         }
         const res = await signup(orgId, req)
         cookie.set("token", res.token.value, new Date(res.token.expires_at))
-        console.log(res)
         showToast.success("success")
         router.push(
           `/dashboard?organization_id=${res.organization_id}&role=${res.user.role}`,
@@ -168,7 +167,6 @@ export const useAuth = () => {
         }
         const res = await signin(req)
         cookie.set("token", res.token.value, new Date(res.token.expires_at))
-        console.log(res)
         showToast.success("success")
         router.push(
           `/dashboard?organization_id=${res.organization_id}&role=${res.user.role}`,
