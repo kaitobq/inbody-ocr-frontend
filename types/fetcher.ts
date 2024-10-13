@@ -2,7 +2,7 @@ export type Req = {
   path: string
   method: "GET" | "POST" | "DELETE" | "PUT" | "PATCH" | "OPTIONS"
   header?: Record<string, string>
-  body: Body
+  body?: Body
   accessToken?: string
 }
 
