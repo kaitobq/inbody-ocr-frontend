@@ -1,64 +1,65 @@
 import {
   Card,
+  CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
-  SelectTrigger,
   Select,
   SelectContent,
   SelectItem,
+  SelectTrigger,
   SelectValue,
-} from "components/ui";
-import { useEffect, useRef, useState } from "react";
+} from "components/ui"
+import { useEffect, useRef, useState } from "react"
 import {
+  Bar,
   BarChart,
   CartesianGrid,
+  Legend,
+  Tooltip,
   XAxis,
   YAxis,
-  Tooltip,
-  Legend,
-  Bar,
-} from "recharts";
+} from "recharts"
 
 interface Props {
   data: {
-    bmi: { [key: string]: number };
-    weight: { [key: string]: number };
-    muscle_weight: { [key: string]: number };
-    fat_percent: { [key: string]: number };
-  };
+    bmi: { [key: string]: number }
+    weight: { [key: string]: number }
+    muscle_weight: { [key: string]: number }
+    fat_percent: { [key: string]: number }
+  }
 }
 
 export const UserDistributionChart = (props: Props) => {
-  const { data } = props;
+  const { data } = props
 
   // ResponsiveContainerが動作しないため、動的に生成
-  const chartContainerRef = useRef<HTMLDivElement>(null);
-  const [chartWidth, setChartWidth] = useState<number>(0);
-  const [chartHeight, setChartHeight] = useState<number>(0);
+  const chartContainerRef = useRef<HTMLDivElement>(null)
+  const [chartWidth, setChartWidth] = useState<number>(0)
+  const [chartHeight, setChartHeight] = useState<number>(0)
 
   useEffect(() => {
     if (chartContainerRef.current) {
-      setChartWidth(chartContainerRef.current.offsetWidth);
-      setChartHeight(chartContainerRef.current.offsetHeight);
+      setChartWidth(chartContainerRef.current.offsetWidth)
+      setChartHeight(chartContainerRef.current.offsetHeight)
     }
-  }, []);
+  }, [])
 
   const metricOptions = {
-    bmi: 'BMI',
-    weight: '体重',
-    muscle_weight: '筋肉量',
-    fat_percent: '体脂肪率',
-  };
+    bmi: "BMI",
+    weight: "体重",
+    muscle_weight: "筋肉量",
+    fat_percent: "体脂肪率",
+  }
 
-  const [selectedMetric, setSelectedMetric] = useState<keyof typeof metricOptions>('bmi');
+  const [selectedMetric, setSelectedMetric] =
+    useState<keyof typeof metricOptions>("bmi")
 
   // 選択された指標に対応するデータを取得
-  const selectedDataMap = data[selectedMetric];
+  const selectedDataMap = data[selectedMetric]
 
   // コンソールで型を確認
-  console.log(typeof selectedDataMap); // 'object' と出力される
+  console.log(typeof selectedDataMap) // 'object' と出力される
 
   // オブジェクトを配列に変換し、Recharts で扱える形式にする
   const chartData = Object.entries(selectedDataMap)
@@ -68,10 +69,14 @@ export const UserDistributionChart = (props: Props) => {
     }))
     // カテゴリを数値的にソート（必要に応じて）
     .sort((a, b) => {
-      const aValue = Number.parseFloat(a.category.match(/\d+(\.\d+)?/)?.[0] || '0');
-      const bValue = Number.parseFloat(b.category.match(/\d+(\.\d+)?/)?.[0] || '0');
-      return aValue - bValue;
-    });
+      const aValue = Number.parseFloat(
+        a.category.match(/\d+(\.\d+)?/)?.[0] || "0",
+      )
+      const bValue = Number.parseFloat(
+        b.category.match(/\d+(\.\d+)?/)?.[0] || "0",
+      )
+      return aValue - bValue
+    })
 
   return (
     <Card className="mt-6">
@@ -82,7 +87,9 @@ export const UserDistributionChart = (props: Props) => {
       <CardContent>
         <div className="mb-4">
           <Select
-            onValueChange={(value) => setSelectedMetric(value as keyof typeof metricOptions)}
+            onValueChange={(value) =>
+              setSelectedMetric(value as keyof typeof metricOptions)
+            }
             defaultValue={selectedMetric}
           >
             <SelectTrigger className="w-[180px]">
@@ -97,7 +104,7 @@ export const UserDistributionChart = (props: Props) => {
             </SelectContent>
           </Select>
         </div>
-        <div ref={chartContainerRef} style={{ width: '100%', height: '300px' }}>
+        <div ref={chartContainerRef} style={{ width: "100%", height: "300px" }}>
           <BarChart data={chartData} width={chartWidth} height={chartHeight}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="category" />
@@ -109,5 +116,5 @@ export const UserDistributionChart = (props: Props) => {
         </div>
       </CardContent>
     </Card>
-  );
-};
+  )
+}

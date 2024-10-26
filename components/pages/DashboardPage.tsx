@@ -1,11 +1,15 @@
 "use client"
 
-import { AdminDashboardComponent } from "components/dashboard/admin-dashboard"
 import { Dashboard } from "components/dashboard/Dashboard"
+import { AdminDashboardComponent } from "components/dashboard/admin-dashboard"
 import { useScreenDashboard } from "mods/hooks/useScreenDashboard"
 import { useSearchParams } from "next/navigation"
 import React from "react"
-import type { GetScreenForAdminResponse, GetScreenForMemberResponse, Role } from "types/dashboard"
+import type {
+  GetScreenForAdminResponse,
+  GetScreenForMemberResponse,
+  Role,
+} from "types/dashboard"
 
 export default function DashboardPage() {
   const searchParams = useSearchParams()
@@ -23,14 +27,14 @@ export default function DashboardPage() {
         <Dashboard data={dataForMember} />
       </div>
     )
-  // biome-ignore lint/style/noUselessElse: <explanation>
+    // biome-ignore lint/style/noUselessElse: <explanation>
   } else if ((role === "admin" || role === "owner") && dataForAdmin) {
     return (
       <div>
         <AdminDashboardComponent data={dataForAdmin} />
       </div>
     )
-  // biome-ignore lint/style/noUselessElse: <explanation>
+    // biome-ignore lint/style/noUselessElse: <explanation>
   } else {
     return <div>データが取得できませんでした</div>
   }

@@ -14,7 +14,7 @@ interface Props {
   onRangeChange: (startDate: string, endDate: string) => void
 }
 
-export const DateRangeSelector = ( props: Props ) => {
+export const DateRangeSelector = (props: Props) => {
   const { data, onRangeChange } = props
 
   const [startDate, setStartDate] = useState("")

@@ -1,23 +1,18 @@
 "use client"
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "components/ui/card"
 import { User } from "lucide-react"
 import type React from "react"
+import type { GetScreenForMemberResponse } from "types/dashboard"
 import { CustomLineChart } from "./CustomLineChart"
 import { DataHistoryTable } from "./DataHistoryTable"
 import { ImageUploader } from "./ImageUploader"
-import type { GetScreenForMemberResponse } from "types/dashboard"
 
 interface Props {
   data: GetScreenForMemberResponse
 }
 
-export function Dashboard( props: Props ) {
+export function Dashboard(props: Props) {
   const { data } = props
 
   return (
@@ -36,10 +31,7 @@ export function Dashboard( props: Props ) {
             </div>
             <p className="text-xs text-muted-foreground">
               前回より
-              {(
-                data?.current?.weight -
-                data?.previous?.weight
-              ).toFixed(1)}
+              {(data?.current?.weight - data?.previous?.weight).toFixed(1)}
               kg 変化
             </p>
           </CardContent>
@@ -56,8 +48,7 @@ export function Dashboard( props: Props ) {
             <p className="text-xs text-muted-foreground">
               前回より
               {(
-                data?.current?.muscle_weight -
-                data?.previous?.muscle_weight
+                data?.current?.muscle_weight - data?.previous?.muscle_weight
               ).toFixed(1)}
               kg 変化
             </p>
@@ -76,10 +67,9 @@ export function Dashboard( props: Props ) {
             </div>
             <p className="text-xs text-muted-foreground">
               前回より
-              {(
-                data?.current?.fat_weight -
-                data?.previous?.fat_weight
-              ).toFixed(1)}
+              {(data?.current?.fat_weight - data?.previous?.fat_weight).toFixed(
+                1,
+              )}
               kg 変化
             </p>
           </CardContent>

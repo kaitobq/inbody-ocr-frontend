@@ -20,7 +20,7 @@ interface Props {
   data: GetScreenForMemberResponse
 }
 
-export const DataHistoryTable = ( props: Props ) => {
+export const DataHistoryTable = (props: Props) => {
   const { data } = props
 
   const [isExpanded, setIsExpanded] = useState(false)

@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "components/ui"
-import { useState, useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import {
   CartesianGrid,
   Legend,
@@ -76,22 +76,22 @@ interface Props {
 }
 
 export const CustomLineChart = ({ data }: Props) => {
-  const [selectedGroup, setSelectedGroup] = useState<SelectedGroup>("kilo");
+  const [selectedGroup, setSelectedGroup] = useState<SelectedGroup>("kilo")
   const [activeDataKeys, setActiveDataKeys] = useState<string[]>(
     dataGroups[selectedGroup].keys,
-  );
+  )
 
   // ResponsiveContainerが動作しないため、動的に生成
-  const chartContainerRef = useRef<HTMLDivElement>(null);
-  const [chartWidth, setChartWidth] = useState<number>(0);
-  const [chartHeight, setChartHeight] = useState<number>(0);
+  const chartContainerRef = useRef<HTMLDivElement>(null)
+  const [chartWidth, setChartWidth] = useState<number>(0)
+  const [chartHeight, setChartHeight] = useState<number>(0)
 
   useEffect(() => {
     if (chartContainerRef.current) {
-      setChartWidth(chartContainerRef.current.offsetWidth);
-      setChartHeight(chartContainerRef.current.offsetHeight);
+      setChartWidth(chartContainerRef.current.offsetWidth)
+      setChartHeight(chartContainerRef.current.offsetHeight)
     }
-  }, []);
+  }, [])
 
   // 元のデータを保持し、日付の昇順にソートする
   const originalData = data.graph[selectedGroup]
@@ -99,8 +99,11 @@ export const CustomLineChart = ({ data }: Props) => {
       ...item,
       created_at: item.created_at.split("T")[0],
     }))
-    .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
-  const [filteredData, setFilteredData] = useState(originalData);
+    .sort(
+      (a, b) =>
+        new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+    )
+  const [filteredData, setFilteredData] = useState(originalData)
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -109,37 +112,36 @@ export const CustomLineChart = ({ data }: Props) => {
         ...item,
         created_at: item.created_at.split("T")[0],
       }))
-      .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
-    setFilteredData(updatedData);
-    setActiveDataKeys(dataGroups[selectedGroup].keys);
-  }, [selectedGroup]);
+      .sort(
+        (a, b) =>
+          new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+      )
+    setFilteredData(updatedData)
+    setActiveDataKeys(dataGroups[selectedGroup].keys)
+  }, [selectedGroup])
 
   const handleRangeChange = (start: string, end: string) => {
     const filtered = originalData.filter(
-      (item) =>
-        item.created_at >= start &&
-        item.created_at <= end,
-    );
-    setFilteredData(filtered);
-  };
+      (item) => item.created_at >= start && item.created_at <= end,
+    )
+    setFilteredData(filtered)
+  }
 
   const handleGroupChange = (group: string) => {
-    setSelectedGroup(group as SelectedGroup);
-  };
+    setSelectedGroup(group as SelectedGroup)
+  }
 
   const handleDataKeyChange = (key: string, checked: boolean) => {
     setActiveDataKeys((prevKeys) =>
       checked ? [...prevKeys, key] : prevKeys.filter((k) => k !== key),
-    );
-  };
+    )
+  }
 
   return (
     <Card className="mt-6">
       <CardHeader>
         <CardTitle>グラフ表示</CardTitle>
-        <CardDescription>
-          選択したデータグループに基づく履歴
-        </CardDescription>
+        <CardDescription>選択したデータグループに基づく履歴</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col space-y-4 sm:flex-row sm:justify-between sm:items-end mb-4">
@@ -179,35 +181,36 @@ export const CustomLineChart = ({ data }: Props) => {
             </div>
           ))}
         </div>
-        <div
-          ref={chartContainerRef}
-          style={{ width: '100%', height: '300px' }}
-        >
-        {chartWidth > 0 && chartHeight > 0 && (
-          <LineChart data={filteredData} width={chartWidth} height={chartHeight}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="created_at" />
-            <YAxis />
-            <Tooltip />
-            <Legend
-              formatter={(value, entry) => {
-                return <span style={{ color: entry.color }}>{value}</span>;
-              }}
-            />
-            {activeDataKeys.map((key) => (
-              <Line
-                key={key}
-                type="monotone"
-                dataKey={key}
-                stroke={dataColors[key as keyof typeof dataColors]}
-                name={dataLabels[key as keyof typeof dataLabels]}
-                hide={!activeDataKeys.includes(key)}
+        <div ref={chartContainerRef} style={{ width: "100%", height: "300px" }}>
+          {chartWidth > 0 && chartHeight > 0 && (
+            <LineChart
+              data={filteredData}
+              width={chartWidth}
+              height={chartHeight}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="created_at" />
+              <YAxis />
+              <Tooltip />
+              <Legend
+                formatter={(value, entry) => {
+                  return <span style={{ color: entry.color }}>{value}</span>
+                }}
               />
-            ))}
-          </LineChart>
-        )}
+              {activeDataKeys.map((key) => (
+                <Line
+                  key={key}
+                  type="monotone"
+                  dataKey={key}
+                  stroke={dataColors[key as keyof typeof dataColors]}
+                  name={dataLabels[key as keyof typeof dataLabels]}
+                  hide={!activeDataKeys.includes(key)}
+                />
+              ))}
+            </LineChart>
+          )}
         </div>
       </CardContent>
     </Card>
-  );
-};
+  )
+}

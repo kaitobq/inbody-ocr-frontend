@@ -109,19 +109,19 @@ export type GetScreenForMemberResponse = {
         protein: number
         mineral: number
         created_at: string
-      }
+      },
     ]
     percent: [
       {
         fat_percent: number
         created_at: string
-      }
+      },
     ]
     score: [
       {
         point: number
         created_at: string
-      }
+      },
     ]
   }
   history: ImageDataForScreen[]

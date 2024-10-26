@@ -1,46 +1,46 @@
-'use client'
+"use client"
 
-import type React from 'react'
-import { useState, useEffect } from 'react'
-import { User, Users, Loader2 } from 'lucide-react'
-import { StatCard } from './StatCard'
-import { OrgDataChart } from './OrgDataChart'
-import { ScoreRanking } from './ScoreRanking'
-import { UserDataChart } from './UserDataChart'
-import { UserDistributionChart } from './UserDistributionChart'
-import { UserTable } from './UserTable'
-import type { GetScreenForAdminResponse } from 'types/dashboard'
+import { Loader2, User, Users } from "lucide-react"
+import type React from "react"
+import { useEffect, useState } from "react"
+import type { GetScreenForAdminResponse } from "types/dashboard"
+import { OrgDataChart } from "./OrgDataChart"
+import { ScoreRanking } from "./ScoreRanking"
+import { StatCard } from "./StatCard"
+import { UserDataChart } from "./UserDataChart"
+import { UserDistributionChart } from "./UserDistributionChart"
+import { UserTable } from "./UserTable"
 
 interface DashboardUser {
-  id: string;
-  name: string;
+  id: string
+  name: string
 }
 
 interface Record {
-  id: string;
-  user_id: string;
-  height: number;
-  weight: number;
-  muscle_weight: number;
-  fat_weight: number;
-  fat_percent: number;
-  body_water: number;
-  protein: number;
-  mineral: number;
-  point: number;
-  created_at: string;
+  id: string
+  user_id: string
+  height: number
+  weight: number
+  muscle_weight: number
+  fat_weight: number
+  fat_percent: number
+  body_water: number
+  protein: number
+  mineral: number
+  point: number
+  created_at: string
 }
 
 interface Data {
-  records: { all: Record[] };
-  users: DashboardUser[];
+  records: { all: Record[] }
+  users: DashboardUser[]
 }
 
 interface Props {
-  data: GetScreenForAdminResponse// userTable用のデータをapi側で用意しておきたい
+  data: GetScreenForAdminResponse // userTable用のデータをapi側で用意しておきたい
 }
 
-export function AdminDashboardComponent( props: Props ) {
+export function AdminDashboardComponent(props: Props) {
   const { data } = props
 
   return (

@@ -3,7 +3,7 @@
 import { cookies } from "next/headers"
 
 export const setCookie = async (key: string, value: string, expires?: Date) => {
-  (await cookies()).set(key, value, {
+  ;(await cookies()).set(key, value, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     path: "/",
