@@ -12,22 +12,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "components/ui"
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import {
   CartesianGrid,
   Legend,
   Line,
   LineChart,
-  ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts"
-import type { DataGroups, ImageData } from "types/dashboard"
+import type { GetScreenForMemberResponse } from "types/dashboard"
 import { DateRangeSelector } from "./DateRangeSelector"
 
-const dataGroups: DataGroups = {
-  weight: {
+const dataGroups = {
+  kilo: {
     label: "体重関連 (kg)",
     keys: [
       "weight",
@@ -38,13 +37,9 @@ const dataGroups: DataGroups = {
       "mineral",
     ],
   },
-  percentage: {
+  percent: {
     label: "体脂肪率 (%)",
     keys: ["fat_percent"],
-  },
-  height: {
-    label: "身長 (cm)",
-    keys: ["height"],
   },
   score: {
     label: "得点",
@@ -53,7 +48,6 @@ const dataGroups: DataGroups = {
 }
 
 const dataLabels = {
-  height: "身長",
   weight: "体重",
   muscle_weight: "筋肉量",
   fat_weight: "体脂肪量",
@@ -65,7 +59,6 @@ const dataLabels = {
 }
 
 const dataColors = {
-  height: "#8884d8",
   weight: "#82ca9d",
   muscle_weight: "#ffc658",
   fat_weight: "#ff8042",
@@ -76,47 +69,84 @@ const dataColors = {
   point: "#8884d8",
 }
 
-export const CustomLineChart: React.FC<{
-  data: ImageData[]
-  title: string
-  description: string
-}> = ({ data, title, description }) => {
+type SelectedGroup = keyof typeof dataGroups
+
+interface Props {
+  data: GetScreenForMemberResponse
+}
+
+export const CustomLineChart = ({ data }: Props) => {
+  const [selectedGroup, setSelectedGroup] = useState<SelectedGroup>("kilo");
   const [activeDataKeys, setActiveDataKeys] = useState<string[]>(
-    dataGroups.weight.keys,
-  )
-  for (const item of data) {
-    item.created_at = item.created_at.split("T")[0]
-  }
-  const [filteredData, setFilteredData] = useState(data)
-  const [selectedGroup, setSelectedGroup] = useState("weight")
+    dataGroups[selectedGroup].keys,
+  );
+
+  // ResponsiveContainerが動作しないため、動的に生成
+  const chartContainerRef = useRef<HTMLDivElement>(null);
+  const [chartWidth, setChartWidth] = useState<number>(0);
+  const [chartHeight, setChartHeight] = useState<number>(0);
+
+  useEffect(() => {
+    if (chartContainerRef.current) {
+      setChartWidth(chartContainerRef.current.offsetWidth);
+      setChartHeight(chartContainerRef.current.offsetHeight);
+    }
+  }, []);
+
+  // 元のデータを保持し、日付の昇順にソートする
+  const originalData = data.graph[selectedGroup]
+    .map((item) => ({
+      ...item,
+      created_at: item.created_at.split("T")[0],
+    }))
+    .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+  const [filteredData, setFilteredData] = useState(originalData);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    const updatedData = data.graph[selectedGroup]
+      .map((item) => ({
+        ...item,
+        created_at: item.created_at.split("T")[0],
+      }))
+      .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+    setFilteredData(updatedData);
+    setActiveDataKeys(dataGroups[selectedGroup].keys);
+  }, [selectedGroup]);
 
   const handleRangeChange = (start: string, end: string) => {
-    const filtered = data.filter(
-      (item) => item.created_at >= start && item.created_at <= end,
-    )
-    setFilteredData(filtered)
-  }
+    const filtered = originalData.filter(
+      (item) =>
+        item.created_at >= start &&
+        item.created_at <= end,
+    );
+    setFilteredData(filtered);
+  };
 
   const handleGroupChange = (group: string) => {
-    setSelectedGroup(group)
-    setActiveDataKeys(dataGroups[group].keys)
-  }
+    setSelectedGroup(group as SelectedGroup);
+  };
 
   const handleDataKeyChange = (key: string, checked: boolean) => {
     setActiveDataKeys((prevKeys) =>
       checked ? [...prevKeys, key] : prevKeys.filter((k) => k !== key),
-    )
-  }
+    );
+  };
 
   return (
     <Card className="mt-6">
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
+        <CardTitle>グラフ表示</CardTitle>
+        <CardDescription>
+          選択したデータグループに基づく履歴
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col space-y-4 sm:flex-row sm:justify-between sm:items-end mb-4">
-          <DateRangeSelector data={data} onRangeChange={handleRangeChange} />
+          <DateRangeSelector
+            data={originalData}
+            onRangeChange={handleRangeChange}
+          />
           <Select
             onValueChange={handleGroupChange}
             defaultValue={selectedGroup}
@@ -149,19 +179,22 @@ export const CustomLineChart: React.FC<{
             </div>
           ))}
         </div>
-        <ResponsiveContainer width="100%" height={300} className="mt-4">
-          <LineChart data={filteredData}>
+        <div
+          ref={chartContainerRef}
+          style={{ width: '100%', height: '300px' }}
+        >
+        {chartWidth > 0 && chartHeight > 0 && (
+          <LineChart data={filteredData} width={chartWidth} height={chartHeight}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="created_at"/>
+            <XAxis dataKey="created_at" />
             <YAxis />
             <Tooltip />
             <Legend
-              onClick={() => {}} // ラベルクリックを無効化
               formatter={(value, entry) => {
-                return <span style={{ color: entry.color }}>{value}</span>
+                return <span style={{ color: entry.color }}>{value}</span>;
               }}
             />
-            {dataGroups[selectedGroup].keys.map((key) => (
+            {activeDataKeys.map((key) => (
               <Line
                 key={key}
                 type="monotone"
@@ -172,8 +205,9 @@ export const CustomLineChart: React.FC<{
               />
             ))}
           </LineChart>
-        </ResponsiveContainer>
+        )}
+        </div>
       </CardContent>
     </Card>
-  )
-}
+  );
+};

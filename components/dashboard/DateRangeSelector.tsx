@@ -1,28 +1,43 @@
 import { Button, Input, Label } from "components/ui"
-import { useCallback, useEffect, useState } from "react"
-import type { ImageData } from "types/dashboard"
+import { useEffect, useState } from "react"
 
-export const DateRangeSelector: React.FC<{
-  data: ImageData[]
+type HasCreatedAt = {
+  created_at: string
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  [key: string]: any
+}
+
+type DataType = HasCreatedAt[]
+
+interface Props {
+  data: DataType
   onRangeChange: (startDate: string, endDate: string) => void
-}> = ({ data, onRangeChange }) => {
+}
+
+export const DateRangeSelector = ( props: Props ) => {
+  const { data, onRangeChange } = props
+
   const [startDate, setStartDate] = useState("")
   const [endDate, setEndDate] = useState("")
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  const handleChange = useCallback(() => {
-    onRangeChange(startDate, endDate)
-  }, [startDate, endDate])
-
   useEffect(() => {
     if (data && data.length > 0) {
-      const newStartDate = data[0]?.created_at.split("T")[0]
-      const newEndDate = data[data.length - 1]?.created_at.split("T")[0]
+      const newStartDate = data[0]?.created_at
+      const newEndDate = data[data.length - 1]?.created_at
       setStartDate(newStartDate)
       setEndDate(newEndDate)
-      handleChange()
+
+      onRangeChange(newStartDate, newEndDate)
     }
-  }, [data, handleChange])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const handleChange = () => {
+    onRangeChange(startDate, endDate)
+  }
+
+  console.log(data[0]?.created_at, startDate)
 
   return (
     <div className="flex flex-col space-y-2 w-full sm:flex-row sm:space-y-0 sm:space-x-4 sm:items-end">
@@ -33,7 +48,7 @@ export const DateRangeSelector: React.FC<{
           type="date"
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
-          min={data[0]?.created_at}
+          min={startDate}
           max={endDate}
         />
       </div>
@@ -45,7 +60,7 @@ export const DateRangeSelector: React.FC<{
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
           min={startDate}
-          max={data[data.length - 1]?.created_at}
+          max={endDate}
         />
       </div>
       <Button onClick={handleChange} className="w-full sm:w-auto">

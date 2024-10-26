@@ -14,9 +14,15 @@ import {
 } from "components/ui"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import { useState } from "react"
-import type { ImageData } from "types/dashboard"
+import type { GetScreenForMemberResponse, ImageData } from "types/dashboard"
 
-export const DataHistoryTable: React.FC<{ data: ImageData[] }> = ({ data }) => {
+interface Props {
+  data: GetScreenForMemberResponse
+}
+
+export const DataHistoryTable = ( props: Props ) => {
+  const { data } = props
+
   const [isExpanded, setIsExpanded] = useState(false)
 
   return (
@@ -45,7 +51,7 @@ export const DataHistoryTable: React.FC<{ data: ImageData[] }> = ({ data }) => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data.map((item, index) => (
+              {data.history.map((item, index) => (
                 // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                 <TableRow key={index}>
                   <TableCell>{item.created_at.split("T")[0]}</TableCell>
