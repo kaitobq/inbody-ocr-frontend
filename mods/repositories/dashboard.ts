@@ -1,6 +1,8 @@
 import type {
   AnalyzeImageResponse,
   GetImageDataForMemberResponse,
+  GetScreenForAdminResponse,
+  GetScreenForMemberResponse,
   SubmitDataRequest,
   SubmitDataResponse,
 } from "types/dashboard"
@@ -10,6 +12,8 @@ type Response = {
   anayzeImage: AnalyzeImageResponse
   submitData: SubmitDataResponse
   getImageDataForMember: GetImageDataForMemberResponse
+  getScreenForMember: GetScreenForMemberResponse
+  getScreenForAdmin: GetScreenForAdminResponse
 }
 
 // type Convert = {
@@ -43,6 +47,24 @@ export const GetImageDataForMember = async (token: string) => {
   return await apiFetcher.fetchJSON<Response["getImageDataForMember"]>({
     accessToken: token,
     path: "/v1/image-data",
+    method: "GET",
+  })
+}
+
+export const GetScreenForMember = async (token: string) => {
+  const apiFetcher = fetcher()
+  return await apiFetcher.fetchJSON<Response["getScreenForMember"]>({
+    accessToken: token,
+    path: "/v1/organization/dashboard",
+    method: "GET",
+  })
+}
+
+export const GetScreenForAdmin = async (token: string) => {
+  const apiFetcher = fetcher()
+  return await apiFetcher.fetchJSON<Response["getScreenForAdmin"]>({
+    accessToken: token,
+    path: "/v1/organization/dashboard/admin",
     method: "GET",
   })
 }
