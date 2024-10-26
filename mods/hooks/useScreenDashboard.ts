@@ -2,6 +2,7 @@ import {
   GetScreenForAdmin,
   GetScreenForMember,
 } from "mods/repositories/dashboard"
+import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import type {
   GetScreenForAdminResponse,
@@ -13,6 +14,7 @@ type Role = "member" | "admin" | "owner"
 
 export const useScreenDashboard = (role: Role) => {
   const cookie = useCookie()
+  const router = useRouter()
   const [dataForMember, setDataForMember] = useState<
     GetScreenForMemberResponse | undefined
   >()
@@ -31,6 +33,13 @@ export const useScreenDashboard = (role: Role) => {
 
     try {
       const res = await GetScreenForMember(token)
+
+      if (Math.floor(res.status / 100) !== 2) {
+        console.error("エラーが発生しました:", res)
+        router.push("/signin")
+        return
+      }
+
       setDataForMember(res)
       console.log("データ取得成功:", res)
     } catch (error) {
@@ -50,6 +59,13 @@ export const useScreenDashboard = (role: Role) => {
 
     try {
       const res = await GetScreenForAdmin(token)
+
+      if (Math.floor(res.status / 100) !== 2) {
+        console.error("エラーが発生しました:", res)
+        router.push("/signin")
+        return
+      }
+
       setDataForAdmin(res)
       console.log("データ取得成功:", res)
     } catch (error) {
