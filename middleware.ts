@@ -31,7 +31,7 @@ async function verifyToken(token: string) {
 
 export async function middleware(request: NextRequest) {
   const cookieStore = cookies()
-  const token = cookieStore.get("token")
+  const token = (await cookieStore).get("token")
   const path = request.nextUrl.pathname
 
   if (PUBLIC_PATHS.includes(path)) {

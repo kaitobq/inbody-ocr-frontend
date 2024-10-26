@@ -3,7 +3,7 @@
 import { cookies } from "next/headers"
 
 export const setCookie = async (key: string, value: string, expires?: Date) => {
-  cookies().set(key, value, {
+  (await cookies()).set(key, value, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     path: "/",
@@ -14,11 +14,11 @@ export const setCookie = async (key: string, value: string, expires?: Date) => {
 
 export const getCookie = async (key: string) => {
   const cookieStore = cookies()
-  const cookie = cookieStore.get(key)
+  const cookie = (await cookieStore).get(key)
   return cookie ? cookie.value : null
 }
 
 export const deleteCookie = async (key: string) => {
   const cookieStore = cookies()
-  cookieStore.delete(key)
+  ;(await cookieStore).delete(key)
 }
