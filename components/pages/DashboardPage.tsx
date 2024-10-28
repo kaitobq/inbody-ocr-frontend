@@ -6,8 +6,6 @@ import { useScreenDashboard } from "mods/hooks/useScreenDashboard"
 import { useSearchParams } from "next/navigation"
 import React from "react"
 import type {
-  GetScreenForAdminResponse,
-  GetScreenForMemberResponse,
   Role,
 } from "types/dashboard"
 

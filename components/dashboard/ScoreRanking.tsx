@@ -12,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "components/ui"
-import { ArrowUpDown, ChevronDown, ChevronUp } from "lucide-react"
+import { ChevronDown, ChevronUp } from "lucide-react"
 import { useState } from "react"
 import type { ImageDataForScreen } from "types/dashboard"
 
@@ -22,25 +22,7 @@ interface Props {
 
 export const ScoreRanking = (props: Props) => {
   const { data } = props
-
-  // const [sortColumn, setSortColumn] = useState<keyof typeof data[0]>('point')
-  // const [sortDirection, setSortDirection] = useState('desc')
   const [isExpanded, setIsExpanded] = useState(false)
-
-  // const sortedData = [...data].sort((a, b) => {
-  //   if (a[sortColumn] < b[sortColumn]) return sortDirection === 'asc' ? -1 : 1
-  //   if (a[sortColumn] > b[sortColumn]) return sortDirection === 'asc' ? 1 : -1
-  //   return 0
-  // })
-
-  // const handleSort = (column: keyof typeof data[0]) => {
-  //   if (column === sortColumn) {
-  //     setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
-  //   } else {
-  //     setSortColumn(column)
-  //     setSortDirection('desc')
-  //   }
-  // }
 
   return (
     <Card className="mt-6">

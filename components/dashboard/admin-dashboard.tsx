@@ -1,8 +1,7 @@
 "use client"
 
-import { Loader2, User, Users } from "lucide-react"
+import { User, Users } from "lucide-react"
 import type React from "react"
-import { useEffect, useState } from "react"
 import type { GetScreenForAdminResponse } from "types/dashboard"
 import { OrgDataChart } from "./OrgDataChart"
 import { ScoreRanking } from "./ScoreRanking"
@@ -10,31 +9,6 @@ import { StatCard } from "./StatCard"
 import { UserDataChart } from "./UserDataChart"
 import { UserDistributionChart } from "./UserDistributionChart"
 import { UserTable } from "./UserTable"
-
-interface DashboardUser {
-  id: string
-  name: string
-}
-
-interface Record {
-  id: string
-  user_id: string
-  height: number
-  weight: number
-  muscle_weight: number
-  fat_weight: number
-  fat_percent: number
-  body_water: number
-  protein: number
-  mineral: number
-  point: number
-  created_at: string
-}
-
-interface Data {
-  records: { all: Record[] }
-  users: DashboardUser[]
-}
 
 interface Props {
   data: GetScreenForAdminResponse // userTable用のデータをapi側で用意しておきたい
