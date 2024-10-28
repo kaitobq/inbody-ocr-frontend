@@ -1,13 +1,11 @@
 "use client"
 
-import { Dashboard } from "components/dashboard/member/Dashboard"
 import { AdminDashboard } from "components/dashboard/admin/AdminDashboard"
+import { Dashboard } from "components/dashboard/member/Dashboard"
 import { useScreenDashboard } from "mods/hooks/useScreenDashboard"
 import { useSearchParams } from "next/navigation"
 import React from "react"
-import type {
-  Role,
-} from "types/dashboard"
+import type { Role } from "types/dashboard"
 
 export default function DashboardPage() {
   const searchParams = useSearchParams()

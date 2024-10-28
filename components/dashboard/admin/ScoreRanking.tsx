@@ -24,24 +24,24 @@ export const ScoreRanking = (props: Props) => {
 
   const columns = [
     {
-      key: 'rank' as const,
-      label: '順位',
+      key: "rank" as const,
+      label: "順位",
       render: (_item: ImageDataForScreen, index: number) => index + 1,
     },
     {
-      key: 'user_name' as const,
-      label: '名前',
+      key: "user_name" as const,
+      label: "名前",
       sortable: true,
     },
     {
-      key: 'point' as const,
-      label: '得点',
+      key: "point" as const,
+      label: "得点",
       sortable: true,
     },
     {
-      key: 'created_at' as const,
-      label: '最終測定日',
-      render: (item: ImageDataForScreen) => item.created_at.split('T')[0],
+      key: "created_at" as const,
+      label: "最終測定日",
+      render: (item: ImageDataForScreen) => item.created_at.split("T")[0],
       sortable: true,
     },
   ]
@@ -56,7 +56,7 @@ export const ScoreRanking = (props: Props) => {
       <CardContent>
         <div
           className={`rounded-md border overflow-hidden ${
-            isExpanded ? '' : 'max-h-[400px] overflow-y-auto'
+            isExpanded ? "" : "max-h-[400px] overflow-y-auto"
           }`}
         >
           <CustomTable
@@ -67,7 +67,10 @@ export const ScoreRanking = (props: Props) => {
             defaultSortDirection="desc"
           />
         </div>
-        <Button onClick={() => setIsExpanded(!isExpanded)} className="mt-4 w-full">
+        <Button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="mt-4 w-full"
+        >
           {isExpanded ? (
             <>
               <ChevronUp className="mr-2 h-4 w-4" />

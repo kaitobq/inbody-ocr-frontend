@@ -7,11 +7,7 @@ import {
   CardTitle,
 } from "components/ui"
 import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover"
-import {
-  AlertTriangle,
-  ChevronDown,
-  ChevronUp,
-} from "lucide-react"
+import { AlertTriangle, ChevronDown, ChevronUp } from "lucide-react"
 import { useMemo, useState } from "react"
 import type { ImageDataForScreen } from "types/dashboard"
 import { CustomTable } from "../CustomTable"
@@ -40,70 +36,70 @@ export const UserTable = (props: Props) => {
 
   const columns = [
     {
-      key: 'user_name' as const,
-      label: '名前',
+      key: "user_name" as const,
+      label: "名前",
       sortable: true,
     },
     {
-      key: 'height' as const,
-      label: '身長 (cm)',
+      key: "height" as const,
+      label: "身長 (cm)",
       sortable: true,
       render: (item: ImageDataForScreen) => item.height.toFixed(1),
     },
     {
-      key: 'weight' as const,
-      label: '体重 (kg)',
+      key: "weight" as const,
+      label: "体重 (kg)",
       sortable: true,
       render: (item: ImageDataForScreen) => item.weight.toFixed(1),
     },
     {
-      key: 'muscle_weight' as const,
-      label: '筋肉量 (kg)',
+      key: "muscle_weight" as const,
+      label: "筋肉量 (kg)",
       sortable: true,
       render: (item: ImageDataForScreen) => item.muscle_weight.toFixed(1),
     },
     {
-      key: 'fat_weight' as const,
-      label: '体脂肪量 (kg)',
+      key: "fat_weight" as const,
+      label: "体脂肪量 (kg)",
       sortable: true,
       render: (item: ImageDataForScreen) => item.fat_weight.toFixed(1),
     },
     {
-      key: 'fat_percent' as const,
-      label: '体脂肪率 (%)',
+      key: "fat_percent" as const,
+      label: "体脂肪率 (%)",
       sortable: true,
       render: (item: ImageDataForScreen) => item.fat_percent.toFixed(1),
     },
     {
-      key: 'body_water' as const,
-      label: '体水分量 (kg)',
+      key: "body_water" as const,
+      label: "体水分量 (kg)",
       sortable: true,
       render: (item: ImageDataForScreen) => item.body_water.toFixed(1),
     },
     {
-      key: 'protein' as const,
-      label: 'タンパク質 (kg)',
+      key: "protein" as const,
+      label: "タンパク質 (kg)",
       sortable: true,
       render: (item: ImageDataForScreen) => item.protein.toFixed(1),
     },
     {
-      key: 'mineral' as const,
-      label: 'ミネラル (kg)',
+      key: "mineral" as const,
+      label: "ミネラル (kg)",
       sortable: true,
       render: (item: ImageDataForScreen) => item.mineral.toFixed(1),
     },
     {
-      key: 'point' as const,
-      label: '得点',
+      key: "point" as const,
+      label: "得点",
       sortable: true,
     },
     {
-      key: 'created_at' as const,
-      label: '測定日',
+      key: "created_at" as const,
+      label: "測定日",
       sortable: true,
       render: (item: ImageDataForScreen) => (
         <div className="flex items-center">
-          {item.created_at.split('T')[0]}
+          {item.created_at.split("T")[0]}
           {new Date(item.created_at) < tenDaysAgo && (
             <Popover>
               <PopoverTrigger>
@@ -121,7 +117,7 @@ export const UserTable = (props: Props) => {
 
   // 行のクラス名を設定
   const rowClassName = (item: ImageDataForScreen) =>
-    new Date(item.created_at) < tenDaysAgo ? 'bg-red-100' : ''
+    new Date(item.created_at) < tenDaysAgo ? "bg-red-100" : ""
 
   return (
     <Card className="mt-6">

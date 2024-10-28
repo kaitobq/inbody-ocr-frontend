@@ -22,45 +22,45 @@ export const DataHistoryTable = (props: Props) => {
 
   const columns = [
     {
-      key: 'created_at' as const,
-      label: '日付',
-      render: (item: ImageData) => item.created_at.split('T')[0],
+      key: "created_at" as const,
+      label: "日付",
+      render: (item: ImageData) => item.created_at.split("T")[0],
     },
     {
-      key: 'height' as const,
-      label: '身長 (cm)',
+      key: "height" as const,
+      label: "身長 (cm)",
     },
     {
-      key: 'weight' as const,
-      label: '体重 (kg)',
+      key: "weight" as const,
+      label: "体重 (kg)",
     },
     {
-      key: 'muscle_weight' as const,
-      label: '筋肉量 (kg)',
+      key: "muscle_weight" as const,
+      label: "筋肉量 (kg)",
     },
     {
-      key: 'fat_weight' as const,
-      label: '体脂肪量 (kg)',
+      key: "fat_weight" as const,
+      label: "体脂肪量 (kg)",
     },
     {
-      key: 'fat_percent' as const,
-      label: '体脂肪率 (%)',
+      key: "fat_percent" as const,
+      label: "体脂肪率 (%)",
     },
     {
-      key: 'body_water' as const,
-      label: '体水分量 (kg)',
+      key: "body_water" as const,
+      label: "体水分量 (kg)",
     },
     {
-      key: 'protein' as const,
-      label: 'タンパク質量 (kg)',
+      key: "protein" as const,
+      label: "タンパク質量 (kg)",
     },
     {
-      key: 'mineral' as const,
-      label: 'ミネラル量 (kg)',
+      key: "mineral" as const,
+      label: "ミネラル量 (kg)",
     },
     {
-      key: 'point' as const,
-      label: '得点',
+      key: "point" as const,
+      label: "得点",
     },
   ]
 
@@ -74,10 +74,7 @@ export const DataHistoryTable = (props: Props) => {
         <div
           className={`overflow-x-auto ${isExpanded ? "" : "max-h-[400px]"} overflow-y-auto`}
         >
-          <CustomTable
-            columns={columns}
-            data={data.history}
-          />
+          <CustomTable columns={columns} data={data.history} />
         </div>
         <Button
           onClick={() => setIsExpanded(!isExpanded)}
