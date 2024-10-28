@@ -14,7 +14,7 @@ interface Props {
   data: GetScreenForAdminResponse // userTable用のデータをapi側で用意しておきたい
 }
 
-export function AdminDashboardComponent(props: Props) {
+export function AdminDashboard(props: Props) {
   const { data } = props
 
   return (
@@ -48,7 +48,7 @@ export function AdminDashboardComponent(props: Props) {
       <UserDistributionChart data={data.chart} />
       <UserTable data={data.current} />
       <ScoreRanking data={data.current} />
-      <UserDataChart data={data.all_data} />
+      <UserDataChart data={data.all_data} /> {/* CustomLineChartを使いたい */}
     </div>
   )
 }

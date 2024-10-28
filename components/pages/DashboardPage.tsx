@@ -1,7 +1,7 @@
 "use client"
 
-import { Dashboard } from "components/dashboard/Dashboard"
-import { AdminDashboardComponent } from "components/dashboard/admin-dashboard"
+import { Dashboard } from "components/dashboard/member/Dashboard"
+import { AdminDashboard } from "components/dashboard/admin/AdminDashboard"
 import { useScreenDashboard } from "mods/hooks/useScreenDashboard"
 import { useSearchParams } from "next/navigation"
 import React from "react"
@@ -29,7 +29,7 @@ export default function DashboardPage() {
   } else if ((role === "admin" || role === "owner") && dataForAdmin) {
     return (
       <div>
-        <AdminDashboardComponent data={dataForAdmin} />
+        <AdminDashboard data={dataForAdmin} />
       </div>
     )
     // biome-ignore lint/style/noUselessElse: <explanation>
