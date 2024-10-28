@@ -5,16 +5,11 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
 } from "components/ui"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import { useState } from "react"
 import type { ImageDataForScreen } from "types/dashboard"
+import { CustomTable } from "../CustomTable"
 
 interface Props {
   data: ImageDataForScreen[]
@@ -23,6 +18,33 @@ interface Props {
 export const ScoreRanking = (props: Props) => {
   const { data } = props
   const [isExpanded, setIsExpanded] = useState(false)
+
+  // 得点で降順ソート
+  const sortedData = [...data].sort((a, b) => b.point - a.point)
+
+  const columns = [
+    {
+      key: 'rank' as const,
+      label: '順位',
+      render: (_item: ImageDataForScreen, index: number) => index + 1,
+    },
+    {
+      key: 'user_name' as const,
+      label: '名前',
+      sortable: true,
+    },
+    {
+      key: 'point' as const,
+      label: '得点',
+      sortable: true,
+    },
+    {
+      key: 'created_at' as const,
+      label: '最終測定日',
+      render: (item: ImageDataForScreen) => item.created_at.split('T')[0],
+      sortable: true,
+    },
+  ]
 
   return (
     <Card className="mt-6">
@@ -33,33 +55,19 @@ export const ScoreRanking = (props: Props) => {
 
       <CardContent>
         <div
-          className={`rounded-md border overflow-hidden ${isExpanded ? "" : "max-h-[400px] overflow-y-auto"}`}
+          className={`rounded-md border overflow-hidden ${
+            isExpanded ? '' : 'max-h-[400px] overflow-y-auto'
+          }`}
         >
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>順位</TableHead>
-                <TableHead className="cursor-pointer">名前</TableHead>
-                <TableHead className="cursor-pointer">得点</TableHead>
-                <TableHead className="cursor-pointer">最終測定日</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {data.map((record, index) => (
-                <TableRow key={record.user_id}>
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{record.user_name}</TableCell>
-                  <TableCell>{record.point}</TableCell>
-                  <TableCell>{record.created_at.split("T")[0]}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <CustomTable
+            columns={columns}
+            data={sortedData}
+            enableSorting={true}
+            defaultSortColumn="point"
+            defaultSortDirection="desc"
+          />
         </div>
-        <Button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="mt-4 w-full"
-        >
+        <Button onClick={() => setIsExpanded(!isExpanded)} className="mt-4 w-full">
           {isExpanded ? (
             <>
               <ChevronUp className="mr-2 h-4 w-4" />

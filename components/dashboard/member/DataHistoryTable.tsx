@@ -5,16 +5,11 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
 } from "components/ui"
 import { ChevronDown, ChevronUp } from "lucide-react"
 import { useState } from "react"
 import type { GetScreenForMemberResponse, ImageData } from "types/dashboard"
+import { CustomTable } from "../CustomTable"
 
 interface Props {
   data: GetScreenForMemberResponse
@@ -24,6 +19,50 @@ export const DataHistoryTable = (props: Props) => {
   const { data } = props
 
   const [isExpanded, setIsExpanded] = useState(false)
+
+  const columns = [
+    {
+      key: 'created_at' as const,
+      label: '日付',
+      render: (item: ImageData) => item.created_at.split('T')[0],
+    },
+    {
+      key: 'height' as const,
+      label: '身長 (cm)',
+    },
+    {
+      key: 'weight' as const,
+      label: '体重 (kg)',
+    },
+    {
+      key: 'muscle_weight' as const,
+      label: '筋肉量 (kg)',
+    },
+    {
+      key: 'fat_weight' as const,
+      label: '体脂肪量 (kg)',
+    },
+    {
+      key: 'fat_percent' as const,
+      label: '体脂肪率 (%)',
+    },
+    {
+      key: 'body_water' as const,
+      label: '体水分量 (kg)',
+    },
+    {
+      key: 'protein' as const,
+      label: 'タンパク質量 (kg)',
+    },
+    {
+      key: 'mineral' as const,
+      label: 'ミネラル量 (kg)',
+    },
+    {
+      key: 'point' as const,
+      label: '得点',
+    },
+  ]
 
   return (
     <Card className="mt-6">
@@ -35,39 +74,10 @@ export const DataHistoryTable = (props: Props) => {
         <div
           className={`overflow-x-auto ${isExpanded ? "" : "max-h-[400px]"} overflow-y-auto`}
         >
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>日付</TableHead>
-                <TableHead>身長 (cm)</TableHead>
-                <TableHead>体重 (kg)</TableHead>
-                <TableHead>筋肉量 (kg)</TableHead>
-                <TableHead>体脂肪量 (kg)</TableHead>
-                <TableHead>体脂肪率 (%)</TableHead>
-                <TableHead>体水分量 (kg)</TableHead>
-                <TableHead>タンパク質量 (kg)</TableHead>
-                <TableHead>ミネラル量 (kg)</TableHead>
-                <TableHead>得点</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {data.history.map((item, index) => (
-                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                <TableRow key={index}>
-                  <TableCell>{item.created_at.split("T")[0]}</TableCell>
-                  <TableCell>{item.height}</TableCell>
-                  <TableCell>{item.weight}</TableCell>
-                  <TableCell>{item.muscle_weight}</TableCell>
-                  <TableCell>{item.fat_weight}</TableCell>
-                  <TableCell>{item.fat_percent}</TableCell>
-                  <TableCell>{item.body_water}</TableCell>
-                  <TableCell>{item.protein}</TableCell>
-                  <TableCell>{item.mineral}</TableCell>
-                  <TableCell>{item.point}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <CustomTable
+            columns={columns}
+            data={data.history}
+          />
         </div>
         <Button
           onClick={() => setIsExpanded(!isExpanded)}

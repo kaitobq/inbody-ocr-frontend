@@ -14,7 +14,7 @@ interface Props {
   data: GetScreenForAdminResponse // userTable用のデータをapi側で用意しておきたい
 }
 
-export function AdminDashboard(props: Props) {
+export const AdminDashboard = (props: Props) => {
   const { data } = props
 
   const userIcon = <Users className="h-4 w-4 text-muted-foreground" />

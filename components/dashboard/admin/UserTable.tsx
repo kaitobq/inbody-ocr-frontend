@@ -5,22 +5,16 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
 } from "components/ui"
 import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover"
 import {
   AlertTriangle,
-  ArrowUpDown,
   ChevronDown,
   ChevronUp,
 } from "lucide-react"
 import { useMemo, useState } from "react"
 import type { ImageDataForScreen } from "types/dashboard"
+import { CustomTable } from "../CustomTable"
 
 interface Props {
   data: ImageDataForScreen[]
@@ -28,30 +22,9 @@ interface Props {
 
 export const UserTable = (props: Props) => {
   const { data } = props
-  const [sortColumn, setSortColumn] = useState<keyof (typeof data)[0] | null>(
-    null,
-  )
-  const [sortDirection, setSortDirection] = useState("asc")
   const [isExpanded, setIsExpanded] = useState(false)
 
-  const sortedData = useMemo(() => {
-    if (!sortColumn) return data
-    return [...data].sort((a, b) => {
-      if (a[sortColumn] < b[sortColumn]) return sortDirection === "asc" ? -1 : 1
-      if (a[sortColumn] > b[sortColumn]) return sortDirection === "asc" ? 1 : -1
-      return 0
-    })
-  }, [data, sortColumn, sortDirection])
-
-  const handleSort = (column: keyof (typeof data)[0]) => {
-    if (column === sortColumn) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc")
-    } else {
-      setSortColumn(column)
-      setSortDirection("asc")
-    }
-  }
-
+  // 平均最終測定日を計算
   const averageLastMeasurement = useMemo(() => {
     const sum = data.reduce(
       (acc, record) => acc + new Date(record.created_at).getTime(),
@@ -60,9 +33,95 @@ export const UserTable = (props: Props) => {
     return new Date(sum / data.length)
   }, [data])
 
+  // 10日前の日付を計算
   const tenDaysAgo = new Date(
     averageLastMeasurement.getTime() - 10 * 24 * 60 * 60 * 1000,
   )
+
+  const columns = [
+    {
+      key: 'user_name' as const,
+      label: '名前',
+      sortable: true,
+    },
+    {
+      key: 'height' as const,
+      label: '身長 (cm)',
+      sortable: true,
+      render: (item: ImageDataForScreen) => item.height.toFixed(1),
+    },
+    {
+      key: 'weight' as const,
+      label: '体重 (kg)',
+      sortable: true,
+      render: (item: ImageDataForScreen) => item.weight.toFixed(1),
+    },
+    {
+      key: 'muscle_weight' as const,
+      label: '筋肉量 (kg)',
+      sortable: true,
+      render: (item: ImageDataForScreen) => item.muscle_weight.toFixed(1),
+    },
+    {
+      key: 'fat_weight' as const,
+      label: '体脂肪量 (kg)',
+      sortable: true,
+      render: (item: ImageDataForScreen) => item.fat_weight.toFixed(1),
+    },
+    {
+      key: 'fat_percent' as const,
+      label: '体脂肪率 (%)',
+      sortable: true,
+      render: (item: ImageDataForScreen) => item.fat_percent.toFixed(1),
+    },
+    {
+      key: 'body_water' as const,
+      label: '体水分量 (kg)',
+      sortable: true,
+      render: (item: ImageDataForScreen) => item.body_water.toFixed(1),
+    },
+    {
+      key: 'protein' as const,
+      label: 'タンパク質 (kg)',
+      sortable: true,
+      render: (item: ImageDataForScreen) => item.protein.toFixed(1),
+    },
+    {
+      key: 'mineral' as const,
+      label: 'ミネラル (kg)',
+      sortable: true,
+      render: (item: ImageDataForScreen) => item.mineral.toFixed(1),
+    },
+    {
+      key: 'point' as const,
+      label: '得点',
+      sortable: true,
+    },
+    {
+      key: 'created_at' as const,
+      label: '測定日',
+      sortable: true,
+      render: (item: ImageDataForScreen) => (
+        <div className="flex items-center">
+          {item.created_at.split('T')[0]}
+          {new Date(item.created_at) < tenDaysAgo && (
+            <Popover>
+              <PopoverTrigger>
+                <AlertTriangle className="ml-2 h-4 w-4 text-red-500" />
+              </PopoverTrigger>
+              <PopoverContent>
+                最終測定日が平均より10日以上前です。測定を促してください。
+              </PopoverContent>
+            </Popover>
+          )}
+        </div>
+      ),
+    },
+  ]
+
+  // 行のクラス名を設定
+  const rowClassName = (item: ImageDataForScreen) =>
+    new Date(item.created_at) < tenDaysAgo ? 'bg-red-100' : ''
 
   return (
     <Card className="mt-6">
@@ -74,145 +133,12 @@ export const UserTable = (props: Props) => {
         <div
           className={`rounded-md border overflow-hidden ${isExpanded ? "" : "max-h-[400px] overflow-y-auto"}`}
         >
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead
-                  onClick={() => handleSort("user_id")}
-                  className="cursor-pointer"
-                >
-                  名前{" "}
-                  {sortColumn === "user_id" && (
-                    <ArrowUpDown className="inline ml-2 h-4 w-4" />
-                  )}
-                </TableHead>
-                <TableHead
-                  onClick={() => handleSort("height")}
-                  className="cursor-pointer"
-                >
-                  身長 (cm){" "}
-                  {sortColumn === "height" && (
-                    <ArrowUpDown className="inline ml-2 h-4 w-4" />
-                  )}
-                </TableHead>
-                <TableHead
-                  onClick={() => handleSort("weight")}
-                  className="cursor-pointer"
-                >
-                  体重 (kg){" "}
-                  {sortColumn === "weight" && (
-                    <ArrowUpDown className="inline ml-2 h-4 w-4" />
-                  )}
-                </TableHead>
-                <TableHead
-                  onClick={() => handleSort("muscle_weight")}
-                  className="cursor-pointer"
-                >
-                  筋肉量 (kg){" "}
-                  {sortColumn === "muscle_weight" && (
-                    <ArrowUpDown className="inline ml-2 h-4 w-4" />
-                  )}
-                </TableHead>
-                <TableHead
-                  onClick={() => handleSort("fat_weight")}
-                  className="cursor-pointer"
-                >
-                  体脂肪量 (kg){" "}
-                  {sortColumn === "fat_weight" && (
-                    <ArrowUpDown className="inline ml-2 h-4 w-4" />
-                  )}
-                </TableHead>
-                <TableHead
-                  onClick={() => handleSort("fat_percent")}
-                  className="cursor-pointer"
-                >
-                  体脂肪率 (%){" "}
-                  {sortColumn === "fat_percent" && (
-                    <ArrowUpDown className="inline ml-2 h-4 w-4" />
-                  )}
-                </TableHead>
-                <TableHead
-                  onClick={() => handleSort("body_water")}
-                  className="cursor-pointer"
-                >
-                  体水分量 (kg){" "}
-                  {sortColumn === "body_water" && (
-                    <ArrowUpDown className="inline ml-2 h-4 w-4" />
-                  )}
-                </TableHead>
-                <TableHead
-                  onClick={() => handleSort("protein")}
-                  className="cursor-pointer"
-                >
-                  タンパク質 (kg){" "}
-                  {sortColumn === "protein" && (
-                    <ArrowUpDown className="inline ml-2 h-4 w-4" />
-                  )}
-                </TableHead>
-                <TableHead
-                  onClick={() => handleSort("mineral")}
-                  className="cursor-pointer"
-                >
-                  ミネラル (kg){" "}
-                  {sortColumn === "mineral" && (
-                    <ArrowUpDown className="inline ml-2 h-4 w-4" />
-                  )}
-                </TableHead>
-                <TableHead
-                  onClick={() => handleSort("point")}
-                  className="cursor-pointer"
-                >
-                  得点{" "}
-                  {sortColumn === "point" && (
-                    <ArrowUpDown className="inline ml-2 h-4 w-4" />
-                  )}
-                </TableHead>
-                <TableHead
-                  onClick={() => handleSort("created_at")}
-                  className="cursor-pointer"
-                >
-                  測定日{" "}
-                  {sortColumn === "created_at" && (
-                    <ArrowUpDown className="inline ml-2 h-4 w-4" />
-                  )}
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {sortedData.map((record) => (
-                <TableRow
-                  key={record.user_id}
-                  className={
-                    new Date(record.created_at) < tenDaysAgo ? "bg-red-100" : ""
-                  }
-                >
-                  <TableCell>{record.user_name}</TableCell>
-                  <TableCell>{record.height.toFixed(1)}</TableCell>
-                  <TableCell>{record.weight.toFixed(1)}</TableCell>
-                  <TableCell>{record.muscle_weight.toFixed(1)}</TableCell>
-                  <TableCell>{record.fat_weight.toFixed(1)}</TableCell>
-                  <TableCell>{record.fat_percent.toFixed(1)}</TableCell>
-                  <TableCell>{record.body_water.toFixed(1)}</TableCell>
-                  <TableCell>{record.protein.toFixed(1)}</TableCell>
-                  <TableCell>{record.mineral.toFixed(1)}</TableCell>
-                  <TableCell>{record.point}</TableCell>
-                  <TableCell className="flex items-center">
-                    {record.created_at.split("T")[0]}
-                    {new Date(record.created_at) < tenDaysAgo && (
-                      <Popover>
-                        <PopoverTrigger>
-                          <AlertTriangle className="ml-2 h-4 w-4 text-red-500" />
-                        </PopoverTrigger>
-                        <PopoverContent>
-                          最終測定日が平均より10日以上前です。測定を促してください。
-                        </PopoverContent>
-                      </Popover>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <CustomTable
+            columns={columns}
+            data={data}
+            enableSorting={true}
+            rowClassName={rowClassName}
+          />
         </div>
         <Button
           onClick={() => setIsExpanded(!isExpanded)}
