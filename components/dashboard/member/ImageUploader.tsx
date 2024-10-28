@@ -12,7 +12,6 @@ import { Loader2, Upload } from "lucide-react"
 import { useImage } from "mods/hooks/useImage"
 import { useRouter } from "next/navigation"
 import { useRef, useState } from "react"
-import type { ImageData } from "types/dashboard"
 
 export const ImageUploader = () => {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null)
